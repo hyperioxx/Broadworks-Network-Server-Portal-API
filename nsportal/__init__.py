@@ -1,8 +1,7 @@
 from lib.servlets import Base, GetWebServerPortal, GetHostingNEInfo
 
 
-"""
-Broadworks NS Portal Overview
+"""Broadworks NS Portal Overview
 ===================
 
 The Network Server portal application programming interface (API)constitutes 
@@ -19,21 +18,13 @@ to the client.
 To prevent unauthorized portal API requests, the Network Server maintains an 
 access control list that contains the only addresses from which portal API
 requests are accepted. Support of the portal API over Hypertext Transfer 
-Protocol Secure Sockets (HTTPS) is currently not offered
+Protocol Secure Sockets (HTTPS) is currently not offered"""
 
-
-
-
-
-"""
 
 class Ns_Portal:
-
-    def __init__(self,host=None):
+    def __init__(self, host=None):
         self.host = None
 
     @property
     def host(self):
         return self.host
-
-
