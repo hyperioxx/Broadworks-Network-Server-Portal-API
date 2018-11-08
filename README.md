@@ -1,4 +1,50 @@
-# Broadworks Network Server Portal Overview
+# PyNsPortal
+
+Still working on documentation and the project itself
+
+A python library/interactive shell to communicate with a Broaworks Network Server(s)  
+
+## How to use in your project
+
+```python
+import pynsportal
+
+```
+
+## Using as an Interactive shell
+
+
+If you have  
+
+```
+
+######        #     #        ######
+#     # #   # ##    #  ####  #     #  ####  #####  #####   ##   #
+#     #  # #  # #   # #      #     # #    # #    #   #    #  #  #
+######    #   #  #  #  ####  ######  #    # #    #   #   #    # #
+#         #   #   # #      # #       #    # #####    #   ###### #
+#         #   #    ## #    # #       #    # #   #    #   #    # #
+#         #   #     #  ####  #        ####  #    #   #   #    # ######
+
+PyNsPortal Copyright (C) 2018  Aaron Kirk Parfitt
+This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
+This is free software, and you are welcome to redistribute it
+under certain conditions; type `show c' for details.
+
+======================================================================
+PyNsPortal Command Line Interface
+  Type help <command> for more information
+======================================================================
+
+
+PYNS_CLI>
+
+ 
+```
+
+
+
+## Broadworks Network Server Portal Overview
 
 
 The Network Server portal application programming interface (API) constitutes 
@@ -18,7 +64,7 @@ requests are accepted. Support of the portal API over Hypertext Transfer
 Protocol Secure Sockets (HTTPS) is currently not offered
 
 
-# API Commands
+## API Commands
 
 #### GetHostingNEInfo
 This command returns the complete hosting NE information for a given
