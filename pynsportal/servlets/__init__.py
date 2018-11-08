@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import requests
 
 
@@ -88,7 +89,7 @@ class GetHostNodeAddresses(Base):
     (IP addresses or host names) for the serving Application Server nodes
     associated with a given Application Server address or alias. Public
     addresses are also known as “Access” addresses, while private
-    addresses are also known as “Signaling” addresses. “DualRouting”
+    addresses are also known as "Signaling" addresses. "DualRouting"
     addresses are included in the resulting list regardless of the value of the
     private parameter, because those addresses are public and private at the
     same time. If the Application Server has an External Web Server (this
