@@ -1,4 +1,4 @@
-from lib.servlets import Base, GetWebServerPortal, GetHostingNEInfo
+from servlets import *
 
 
 """Broadworks NS Portal Overview
@@ -21,10 +21,3 @@ requests are accepted. Support of the portal API over Hypertext Transfer
 Protocol Secure Sockets (HTTPS) is currently not offered"""
 
 
-class Ns_Portal:
-    def __init__(self, host=None):
-        self.host = None
-
-    @property
-    def host(self):
-        return self.host

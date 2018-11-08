@@ -85,8 +85,10 @@ class GetHostNodeAddresses(Base):
     the “private” address is the address (server name) of the collocated Web
     Server on the Application Server host
     """
-    def __init__(self):
-        pass
+    def __init__(self, address=None, private=None):
+        self.address = address
+        self.private = private
+
 
 
 class GetServingAS(Base):
@@ -120,8 +122,10 @@ class GetServingAS(Base):
     (DN) “15146987500”, with the URL “user11@broadsoft.com”, and with
     extension “1234” in group ID “North_as87”.
     """
-    def __init__(self):
+    def __init__(self, dn=None, compatiblexsp=None, url=None,
+                 ext=None, groupid=None, hostid=None, private=None):
         pass
+
 
 
 class GetHostsForEnterprise(Base):
