@@ -10,7 +10,6 @@ import servlets
 
 __version__ = "0.1.0"
 
-from servlets import GetAllHostingNeNodeAddresses
 
 
 INTRO1 = """
