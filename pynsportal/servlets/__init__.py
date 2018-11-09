@@ -6,15 +6,14 @@ class Base(object):
     """
     Base class for broadworks servlets
     """
+
     def __init__(self):
         self.servlet = None
         self.host = "localhost"
         self.url_path = "/servlet/{}"
 
     def send_request(self, servlet):
-        response = requests.get("http://{}{}".format(self.host,self.url_path))
-
-
+        response = requests.get("http://{}{}".format(self.host, self.url_path))
 
 
 class GetWebServerPortal(Base):
@@ -22,6 +21,7 @@ class GetWebServerPortal(Base):
     This command returns a list of Web Servers running the specified
     software version.
     """
+
     def __init__(self, host, version=None, webimpactingpatches=None):
         self.version = version
         self.webimpactingpatches = webimpactingpatches
@@ -49,7 +49,8 @@ class GetHostingNEInfo(Base):
     value is irrelevant.
     In this model, the type of server (primary or secondary) is returned.
     """
-    def __init__(self, host, url=None, callprequest=None ):
+
+    def __init__(self, host, url=None, callprequest=None):
         self.url_path = self.url_path.format("GetHostingNEInfo")
         self.host = host
         self.url = url
@@ -71,6 +72,7 @@ class AuthorizeToken(Base):
     up to use an external authentication client (this applies to the Release
     10 External Authentication Support functionality)
     """
+
     def __init__(self, host, userid=None, password=None, token=None):
         self.url_path = self.url_path.format("AuthorizeToken")
         self.host = host
@@ -80,7 +82,6 @@ class AuthorizeToken(Base):
 
     def __check_args(self):
         pass
-
 
 
 class GetHostNodeAddresses(Base):
@@ -99,6 +100,7 @@ class GetHostNodeAddresses(Base):
     the “private” address is the address (server name) of the collocated Web
     Server on the Application Server host
     """
+
     def __init__(self, host, address=None, private=None):
         self.url_path = self.url_path.format("GetHostNodeAddresses")
         self.host = host
@@ -107,7 +109,6 @@ class GetHostNodeAddresses(Base):
 
     def __check_args(self):
         pass
-
 
 
 class GetServingAS(Base):
@@ -141,8 +142,9 @@ class GetServingAS(Base):
     (DN) “15146987500”, with the URL “user11@broadsoft.com”, and with
     extension “1234” in group ID “North_as87”.
     """
-    def __init__(self, host, dn=None, compatiblexsp=None, url=None,
-                 ext=None, groupid=None, hostid=None, private=None):
+
+    def __init__(self, host, dn=None, compatiblexsp=None, url=None, ext=None,
+                 groupid=None, hostid=None, private=None):
         self.url_path = self.url_path.format("GetServingAS")
         self.host = host
         self.dn = dn
@@ -157,11 +159,11 @@ class GetServingAS(Base):
         pass
 
 
-
 class GetHostsForEnterprise(Base):
     """
     This command returns a list of hosting NEs that hosts a given enterprise.
     """
+
     def __init__(self, host, enterprisename=None):
         self.url_path = self.url_path.format("GetHostsForEnterprise")
         self.host = host
@@ -169,6 +171,7 @@ class GetHostsForEnterprise(Base):
 
     def __check_args(self):
         pass
+
 
 class GetAllHostingNeNodeAddresses(Base):
     """
@@ -186,9 +189,10 @@ class GetAllHostingNeNodeAddresses(Base):
     then the returned list will contain the addresses as if the network
     was partition-less based.
     """
+
     def __init__(self, host, private=None, broadworksonly=None,
-                 callprequest=None, disregardpartitions=None,
-                 clustermode=None, enterprisename=None):
+                 callprequest=None, disregardpartitions=None, clustermode=None,
+                 enterprisename=None):
         self.url_path = self.url_path.format("GetAllHostingNeNodeAddresses")
         self.host = host
         self.private = private
@@ -202,16 +206,14 @@ class GetAllHostingNeNodeAddresses(Base):
         pass
 
 
-
-
 class GetDeviceFileServingAS(Base):
     """
     This command returns the hosting NE server(s) where a device file can be
     located
     """
+
     def __init__(self):
         self.url_path = self.url_path.format("GetAllHostingNeNodeAddresses")
-
 
     def __check_args(self):
         pass

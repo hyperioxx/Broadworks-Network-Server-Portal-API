@@ -1,5 +1,12 @@
+"""
+Library which runs the command line interface which is based off the
+broadworks command line interface for ease of use
+
+"""
+
 import cmd
 import cli
+import servlets
 
 __version__ = "0.1.0"
 
@@ -20,15 +27,6 @@ INTRO1 = """
             "Y88P" 
 """
 
-INTRO2 = """
-######        #     #        ######                                    
-#     # #   # ##    #  ####  #     #  ####  #####  #####   ##   #      
-#     #  # #  # #   # #      #     # #    # #    #   #    #  #  #      
-######    #   #  #  #  ####  ######  #    # #    #   #   #    # #      
-#         #   #   # #      # #       #    # #####    #   ###### #      
-#         #   #    ## #    # #       #    # #   #    #   #    # #      
-#         #   #     #  ####  #        ####  #    #   #   #    # ######                                                                        
-"""
 
 INTRO = """
 PyNsPortal Copyright (C) 2018  Aaron Kirk Parfitt 
@@ -60,16 +58,13 @@ HOST = None
 
 class BaseShell(cmd.Cmd):
 
+    host = None
+
     def default(self, line):
-        """Called on an input line when the command prefix is not recognized.
-        If this method is not overridden, it prints an error message and
-        returns.
-        """
         self.stdout.write('Invalid command\n\n')
 
     def do_help(self, arg):
         if arg:
-            # XXX check arg syntax
             try:
                 func = getattr(self, 'help_' + arg)
             except AttributeError:
@@ -92,7 +87,6 @@ class BaseShell(cmd.Cmd):
                 if name[:5] == 'help_':
                     help[name[5:]] = 1
             names.sort()
-            # There can be duplicates if routines overridden
             prevname = ''
             for name in names:
                 if name[:3] == 'do_':
@@ -121,17 +115,29 @@ class BaseShell(cmd.Cmd):
                 self.stdout.write("\n")
 
     def columnize(self, list, displaywidth=80):
-        for index ,item in enumerate(list):
+        for index, item in enumerate(list):
             if item == "get":
-                print "    " + str(index) + ") " + "{:>10}".format(item) + " : show related attributes"
+                print "    " + str(index) + ") " + "{:>8}".format(item) + " " \
+                                                                          ": show related attributes"
             elif item == "set":
-                print "    " + str(index) + ") " + "{:>10}".format(item) + " : modify related attributes"
+                print "    " + str(index) + ") " + "{:>8}".format(item) + " " \
+                                                                          ": modify related attributes"
             else:
                 print "    "+str(index)+") "+"{:>30}".format(item) + " : go to " \
                                                                  "level {" \
                                                                  "}".format(item)
 
-    def do_version(self,c):
+    def parse_commands(self,line):
+        commands = {}
+        try:
+            for i in range(0, len(line), 2):
+                chunk = line[i:i + 2]
+                commands[chunk[0]] = chunk[1]
+            return commands
+        except IndexError:
+            return None
+
+    def do_version(self, c):
         print "PyNsPortal Version: " + __version__
 
 
@@ -141,6 +147,12 @@ class BaseShell(cmd.Cmd):
 
     def do_q(self, i):
         return True
+
+    def do_comp(self, c):
+        print self.completion_matches
+
+
+
 
 
 
@@ -166,7 +178,8 @@ class NsPortalShell(BaseShell):
                    '5': self.do_GetHostingNEInfo,
                    '6': self.do_GetHostsForEnterprise,
                    '7': self.do_GetServingAS,
-                   '8': self.do_GetWebServerPortal, }
+                   '8': self.do_GetWebServerPortal,
+                   'conn':self.do_Connect,}
 
     def do_GetWebServerPortal(self,c):
         """
@@ -235,7 +248,7 @@ class NsPortalShell(BaseShell):
             the "private" address is the address (server name) of the collocated Web
             Server on the Application Server host
         """
-        print("Test")
+        print "Test"
 
     def do_GetServingAS(self,c):
         """
@@ -268,13 +281,13 @@ class NsPortalShell(BaseShell):
             (DN) "15146987500", with the URL "user11@broadsoft.com", and with
             extension "1234" in group ID "North_as87".
         """
-        print("Test")
+        print "Test"
 
     def do_GetHostsForEnterprise(self, c):
         """
             This command returns a list of hosting NEs that hosts a given enterprise.
         """
-        print("Test")
+        print "Test"
 
     def do_GetAllHostingNeNodeAddresses(self, c):
         """
@@ -292,22 +305,22 @@ class NsPortalShell(BaseShell):
             then the returned list will contain the addresses as if the network
             was partition-less based.
         """
-        print("Test")
+        print "Test"
 
     def do_GetDeviceFileServingAS(self, c):
         """
             This command returns the hosting NE server(s) where a device file can be
             located
         """
-        print("Test")
+        print "Test"
 
     def do_show(self, option):
         if option == "w":
-            print(WARREANTY)
+            print WARREANTY
         elif option == "c":
-            print(""" dsasdasda""")
+            print """ dsasdasda"""
         else:
-            print(""" *** unknown show command""")
+            print """ *** unknown show command"""
 
 
     def do_Connect(self, c):
@@ -321,9 +334,10 @@ class NsPortalShell(BaseShell):
 
 
     def precmd(self, line):
-        if NsPortalShell.connection == False:
+        if NsPortalShell.connection == None:
             try:
-                if line.split()[0] not in  ("Connect","?","help","exit","q","show") :
+                if line.split()[0] not in ("Connect", "?", "help", "exit",
+                                            "q", "show", "version"):
                     print "Not connected to Network Server\n"
                     self.lastcmd = ""
                     return ''
@@ -352,16 +366,39 @@ class GetWebServerPortalShell(BaseShell):
     undoc_header = None
     doc_header = "Commands:"
 
-    def do_get(self):
+    def do_get(self, c):
         "Get Message"
-        print "Test"
+        line = c.split()
+        if len(line) > 0:
+            parsed_commands = self.parse_commands(line)
+            if parsed_commands == None:
+                print "Invalid command\n\n"
+            else:
+                # TODO: fix me
+                pass
+        else:
+            servlets.GetWebServerPortal(BaseShell.host)
 
-    def do_set(self):
-        pass
+    def precmd(self, line):
+        if BaseShell.host == None:
+            try:
+                if line.split()[0] not in ("Connect", "?", "help", "exit",
+                                            "q", "show", "version"):
+                    print "Not connected to Network Server\n"
+                    self.lastcmd = ""
+                    return ''
+                else:
+                    return line
+            except IndexError:
+                return line
+        else:
+            return line
+
+    def do_set(self, c):
+        line = c.split()
 
     def do_test(self,l):
-        print("Test")
-
+        print "Test"
 
 
 
@@ -385,12 +422,25 @@ class ConnectShell(BaseShell):
 
     def do_get(self,c):
         "Get"
-        print c
+        try:
+            print "host="+BaseShell.host
+        except TypeError:
+            print "host="
 
     def do_set(self,c):
         "Set"
-
-        print c
+        line = c.split()
+        if len(line) > 0:
+            parsed_commands = self.parse_commands(line)
+            if parsed_commands == None:
+                print "Invalid command\n\n"
+            else:
+                try:
+                    BaseShell.host = parsed_commands['host']
+                except KeyError:
+                    print "Invalid command\n\n"
+        else:
+            print "Invalid command\n\n"
 
     def default(self, line):
         cmd, arg, line = self.parseline(line)
