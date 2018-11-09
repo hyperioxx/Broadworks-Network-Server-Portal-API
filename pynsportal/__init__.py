@@ -1,5 +1,7 @@
 from servlets import *
 
+__version__ = "0.1.0"
+
 
 """Broadworks NS Portal Overview
 ===================

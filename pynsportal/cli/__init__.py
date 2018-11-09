@@ -1,8 +1,12 @@
 import cmd
 import cli
 
+__version__ = "0.1.0"
 
-INTRO2 = """
+from servlets import GetAllHostingNeNodeAddresses
+
+
+INTRO1 = """
 8888888b.           888b    888          8888888b.                  888             888 
 888   Y88b          8888b   888          888   Y88b                 888             888 
 888    888          88888b  888          888    888                 888             888 
@@ -16,7 +20,7 @@ INTRO2 = """
             "Y88P" 
 """
 
-INTRO1 = """
+INTRO2 = """
 ######        #     #        ######                                    
 #     # #   # ##    #  ####  #     #  ####  #####  #####   ##   #      
 #     #  # #  # #   # #      #     # #    # #    #   #    #  #  #      
@@ -51,6 +55,7 @@ IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF
 ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
 """
 
+HOST = None
 
 
 class BaseShell(cmd.Cmd):
@@ -117,11 +122,17 @@ class BaseShell(cmd.Cmd):
 
     def columnize(self, list, displaywidth=80):
         for index ,item in enumerate(list):
-            print "    "+str(index)+") "+"{:>30}".format(item) + " : go to " \
+            if item == "get":
+                print "    " + str(index) + ") " + "{:>10}".format(item) + " : show related attributes"
+            elif item == "set":
+                print "    " + str(index) + ") " + "{:>10}".format(item) + " : modify related attributes"
+            else:
+                print "    "+str(index)+") "+"{:>30}".format(item) + " : go to " \
                                                                  "level {" \
-                                                                 "}".format(
-                item)
+                                                                 "}".format(item)
 
+    def do_version(self,c):
+        print "PyNsPortal Version: " + __version__
 
 
     def do_exit(self, i):
@@ -142,7 +153,7 @@ class NsPortalShell(BaseShell):
     intro = INTRO1 + INTRO
     undoc_header = None
     ruler = False
-    connection = False
+    connection = True
 
 
     def __init__(self):
@@ -303,8 +314,11 @@ class NsPortalShell(BaseShell):
         """
           This command checks connection to the Network Server(s)
         """
-        print "Test Connection"
-        pass
+        name = "Connect"
+        shell = ConnectShell()
+        shell.prompt = NsPortalShell._prompt + "/" + name + "> "
+        shell.cmdloop()
+
 
     def precmd(self, line):
         if NsPortalShell.connection == False:
@@ -342,6 +356,9 @@ class GetWebServerPortalShell(BaseShell):
         "Get Message"
         print "Test"
 
+    def do_set(self):
+        pass
+
     def do_test(self,l):
         print("Test")
 
@@ -356,3 +373,28 @@ class GetHostingNEInfoShell(BaseShell):
     def do_test(self):
         "Test Command"
         print("Test")
+
+class ConnectShell(BaseShell):
+    undoc_header = None
+    doc_header = "Commands:"
+
+    def __init__(self):
+        cmd.Cmd.__init__(self)
+        self.aliases = {'0': self.do_get,
+                        '1': self.do_set,}
+
+    def do_get(self,c):
+        "Get"
+        print c
+
+    def do_set(self,c):
+        "Set"
+
+        print c
+
+    def default(self, line):
+        cmd, arg, line = self.parseline(line)
+        if cmd in self.aliases:
+            self.aliases[cmd](arg)
+        else:
+            print("Invalid command\n\n")
